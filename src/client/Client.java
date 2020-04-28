@@ -8,19 +8,20 @@ import java.util.Scanner;
 
 public class Client {
     final static int ServerPort = 1234;
+    static Socket gameSocket;
+    public Client(InetAddress serverAddress) throws IOException {
+        // establish the connection
+        Client.gameSocket = new Socket(serverAddress, ServerPort);
+
+    }
+
 
     public static void main(String args[]) throws UnknownHostException, IOException {
         Scanner scn = new Scanner(System.in);
 
-        // getting localhost ip
-        InetAddress ip = InetAddress.getByName("localhost");
-
-        // establish the connection
-        Socket s = new Socket(ip, ServerPort);
-
         // obtaining input and out streams
-        DataInputStream dis = new DataInputStream(s.getInputStream());
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+        DataInputStream inputStream = new DataInputStream(gameSocket.getInputStream());
+        DataOutputStream outputStream = new DataOutputStream(gameSocket.getOutputStream());
 
         // sendMessage thread
         Thread sendMessage = new Thread(new Runnable() {
@@ -33,7 +34,7 @@ public class Client {
 
                     try {
                         // write on the output stream
-                        dos.writeUTF(msg);
+                        outputStream.writeUTF(msg);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -49,7 +50,7 @@ public class Client {
                 while (true) {
                     try {
                         // read the message sent to this client
-                        String msg = dis.readUTF();
+                        String msg = inputStream.readUTF();
                         System.out.println(msg);
                     } catch (IOException e) {
 

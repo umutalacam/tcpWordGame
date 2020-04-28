@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
  * Manages player communication
  */
 class PlayerClient implements Runnable {
-    private String name;
+    private String playerName;
     private final DataInputStream inputStream;
     private final DataOutputStream outputStream;
     private Socket clientSocket;
@@ -21,7 +21,7 @@ class PlayerClient implements Runnable {
         this.clientSocket = clientSocket;
         this.inputStream = dis;
         this.outputStream = dos;
-        this.name = name;
+        this.playerName = name;
         this.isloggedin=true;
     }
 
@@ -32,7 +32,7 @@ class PlayerClient implements Runnable {
             try {
                 // Receive string
                 receivedInput = inputStream.readUTF();
-                System.out.println(receivedInput);
+                System.out.println("Player sent:" + receivedInput);
 
                 if(receivedInput.equals("logout")){
                     this.isloggedin=false;
@@ -40,8 +40,8 @@ class PlayerClient implements Runnable {
                     break;
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
+
             }
 
         }

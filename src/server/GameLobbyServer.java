@@ -37,7 +37,7 @@ public class GameLobbyServer implements Runnable{
         while (true) {
             // Accept the incoming request
             Socket clientSocket = serverSocket.accept();
-            System.out.println("New player joined: " + clientSocket);
+            System.out.println("New player joined: " + clientSocket.getInetAddress().getHostName());
 
             // obtain input and output streams
             DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
