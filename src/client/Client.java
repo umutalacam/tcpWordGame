@@ -6,12 +6,10 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client
-{
+public class Client {
     final static int ServerPort = 1234;
 
-    public static void main(String args[]) throws UnknownHostException, IOException
-    {
+    public static void main(String args[]) throws UnknownHostException, IOException {
         Scanner scn = new Scanner(System.in);
 
         // getting localhost ip
@@ -25,8 +23,7 @@ public class Client
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
         // sendMessage thread
-        Thread sendMessage = new Thread(new Runnable()
-        {
+        Thread sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -45,8 +42,7 @@ public class Client
         });
 
         // readMessage thread
-        Thread readMessage = new Thread(new Runnable()
-        {
+        Thread readMessage = new Thread(new Runnable() {
             @Override
             public void run() {
 

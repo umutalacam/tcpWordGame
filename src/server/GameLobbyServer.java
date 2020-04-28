@@ -54,5 +54,9 @@ public class GameLobbyServer implements Runnable{
             GameLobbyServer.numberOfPlayers++;
         }
     }
+
+    public void startGame(){
+        Game.startNewGame(players);
+    }
 }
 
