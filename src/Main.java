@@ -1,23 +1,21 @@
-import client.Client;
-import server.Game;
-import server.GameLobbyServer;
+import client.GameClient;
+import server.LobbyServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
-    private static Client gameClient;
+    private static GameClient gameClient;
 
     public static void main(String[] args) {
         Scanner keyboardInput = new Scanner(System.in);
 
         System.out.println("Welcome to Online TCP word game.\nHost or join a game to play.");
-        System.out.println("1) Host Game");
-        System.out.println("2) Join Game");
+        System.out.println("[1] Host Game");
+        System.out.println("[2] Join Game");
         int menuChoice;
 
         //Prompt
@@ -45,6 +43,7 @@ public class Main {
             System.out.println("Invalid choice. Please select 1 or 2.");
         }
 
+        //Start game client
         try {
             gameClient.main(null);
         } catch (IOException e) {
@@ -54,13 +53,13 @@ public class Main {
     }
 
     private static void createLobby(){
-        GameLobbyServer lobbyServer = new GameLobbyServer();
+        LobbyServer lobbyServer = new LobbyServer();
         Thread lobbyThread = new Thread(lobbyServer);
         lobbyThread.start();
         String ipStr = "Unknown";
         try {
             InetAddress ip = InetAddress.getByName("localhost");
-            gameClient = new Client(ip);
+            gameClient = new GameClient(ip);
             ipStr = ip.getHostAddress();
 
         } catch (UnknownHostException e) {
@@ -80,7 +79,7 @@ public class Main {
         String userInput = keyboardScn.nextLine();
         try{
             InetAddress address = InetAddress.getByName(userInput);
-            gameClient = new Client(address);
+            gameClient = new GameClient(address);
         } catch (UnknownHostException e) {
             System.out.println("Error: Unknown host.");
             joinLobby();

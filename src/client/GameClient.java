@@ -2,34 +2,40 @@ package client;
 // Java implementation for multithreaded chat client
 // Save file as client.Client.java
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client {
+/**
+ * Communicate with the game server
+ * Play game
+ */
+public class GameClient {
     final static int ServerPort = 1234;
     static Socket gameSocket;
-    public Client(InetAddress serverAddress) throws IOException {
-        // establish the connection
-        Client.gameSocket = new Socket(serverAddress, ServerPort);
+    private static DataInputStream inputStream;
+    private static DataOutputStream outputStream;
 
+
+    public GameClient(InetAddress serverAddress) throws IOException {
+        // establish the connection with the game socket
+        GameClient.gameSocket = new Socket(serverAddress, ServerPort);
+        inputStream = new DataInputStream(gameSocket.getInputStream());
+        outputStream = new DataOutputStream(gameSocket.getOutputStream());
     }
 
 
-    public static void main(String args[]) throws UnknownHostException, IOException {
+    public static void main(String args[]) {
         Scanner scn = new Scanner(System.in);
-
-        // obtaining input and out streams
-        DataInputStream inputStream = new DataInputStream(gameSocket.getInputStream());
-        DataOutputStream outputStream = new DataOutputStream(gameSocket.getOutputStream());
 
         // sendMessage thread
         Thread sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-
                     // read the message to deliver.
+                    System.out.print("-> ");
                     String msg = scn.nextLine();
 
                     try {
@@ -53,7 +59,6 @@ public class Client {
                         String msg = inputStream.readUTF();
                         System.out.println(msg);
                     } catch (IOException e) {
-
                         e.printStackTrace();
                     }
                 }
@@ -62,6 +67,5 @@ public class Client {
 
         sendMessage.start();
         readMessage.start();
-
     }
 }

@@ -8,7 +8,7 @@ import java.util.*;
 import java.net.*;
 
 // server.Server class
-public class GameLobbyServer implements Runnable{
+public class LobbyServer implements Runnable{
 
     // Array of players
     private static ArrayList<PlayerClient> players = new ArrayList<>();
@@ -37,21 +37,17 @@ public class GameLobbyServer implements Runnable{
         while (true) {
             // Accept the incoming request
             Socket clientSocket = serverSocket.accept();
-            System.out.println("New player joined: " + clientSocket.getInetAddress().getHostName());
-
-            // obtain input and output streams
-            DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
+            System.out.println("New player: " + clientSocket.getInetAddress().getHostName());
 
             // Create a new handler object for handling this request.
-            PlayerClient playerClient = new PlayerClient(clientSocket,"Player" + numberOfPlayers, inputStream, outputStream);
+            PlayerClient playerClient = new PlayerClient(clientSocket,"Player " + numberOfPlayers);
             players.add(playerClient);
 
             // Create a new Thread with this object.
             Thread t = new Thread(playerClient);
             t.start();
 
-            GameLobbyServer.numberOfPlayers++;
+            LobbyServer.numberOfPlayers++;
         }
     }
 

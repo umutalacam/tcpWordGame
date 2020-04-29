@@ -17,12 +17,14 @@ class PlayerClient implements Runnable {
     boolean isloggedin;
 
     // constructor
-    public PlayerClient(Socket clientSocket, String name, DataInputStream dis, DataOutputStream dos) {
+    public PlayerClient(Socket clientSocket, String playerName) throws IOException {
         this.clientSocket = clientSocket;
-        this.inputStream = dis;
-        this.outputStream = dos;
-        this.playerName = name;
+        this.inputStream = new DataInputStream(clientSocket.getInputStream());
+        this.outputStream = new DataOutputStream(clientSocket.getOutputStream());
+        this.playerName = playerName;
         this.isloggedin=true;
+
+        outputStream.writeUTF(playerName + " joined lobby.");
     }
 
     @Override
@@ -30,9 +32,9 @@ class PlayerClient implements Runnable {
         String receivedInput;
         while (true) {
             try {
-                // Receive string
+                // Receive string from user.
                 receivedInput = inputStream.readUTF();
-                System.out.println("Player sent:" + receivedInput);
+                outputStream.writeUTF("Player sent:" + receivedInput);;
 
                 if(receivedInput.equals("logout")){
                     this.isloggedin=false;
