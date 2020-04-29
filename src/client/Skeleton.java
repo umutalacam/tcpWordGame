@@ -41,7 +41,10 @@ public class Skeleton implements Runnable{
                 client.completeTurn();
                 break;
             case "already_guessed":
-                System.out.println("Already guessed..");
+                client.alreadyGuessed();
+                break;
+            case "invalid_word":
+                client.invalidWord();
                 break;
             case "game_over":
                 client.gameOver();

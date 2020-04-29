@@ -32,6 +32,8 @@ public class GameClient {
         skeletonThread.start();
     }
 
+    /* Implementation of different states */
+
     protected void onTurn(){
         //Turn of this player.
         System.out.print("Your turn");
@@ -40,20 +42,30 @@ public class GameClient {
 
     }
 
-    protected void completeTurn(){
-    }
+    protected void completeTurn(){ }
 
-    protected void notOnTurn(){
+    protected void notOnTurn() {
         System.out.println("It's not your turn.");
     }
 
     protected void gameOver(){
         try {
             skeletonThread.wait();
-            System.out.println("Game Over: You lost.");
+            System.out.println("Time Up: You lost.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void alreadyGuessed(){
+        System.out.println("Your answer have guessed before. Please enter another word.");
+        onTurn();
+    }
+
+    protected void invalidWord(){
+        System.out.println("Please enter a valid word. " +
+                "Your answer's first character needs to be same with the last character of the last answer.");
+        onTurn();
     }
 
     private void sendWord(String word){

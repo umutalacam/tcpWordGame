@@ -12,6 +12,8 @@ public class Game {
     private static final String ON_TURN = "on_turn";
     private static final String NOT_ON_TURN = "not_on_turn";
     private static final String COMPLETE_TURN = "complete_turn";
+    private static final String ALREADY_GUESSED = "already_guessed";
+    private static final String INVALID_WORD = "invalid_word";
     private static final String GAME_OVER = "game_over";
 
     //Game contructor
@@ -30,18 +32,40 @@ public class Game {
     }
 
     public void giveWord(PlayerClient player, String word){
-        if (player.equals(currentPlayer)) {
-            player.notifyClient(COMPLETE_TURN);
-            for (PlayerClient client : players) {
-                if (!client.equals(currentPlayer))
-                    client.notifyClient(player.getPlayerName()+ ": " + word);
-            }
-            completeTurn();
-
-        }
-        else {
+        if (!player.equals(currentPlayer)){
             player.notifyClient(NOT_ON_TURN);
+            return;
         }
+
+        word = word.toLowerCase();
+
+        //Check if answer is valid
+        if (wordsUsed.contains(word)){
+            player.notifyClient(ALREADY_GUESSED);
+            return;
+        }
+
+        //Check if valid word
+        if (!wordsUsed.isEmpty()){
+            int lastIndex = wordsUsed.size() - 1;
+            String lastWord = wordsUsed.get(lastIndex);
+            String lastChar = lastWord.substring(lastWord.length() - 1);
+            if (!word.startsWith(lastChar)){
+                player.notifyClient(INVALID_WORD);
+                return;
+            }
+        }
+
+        //Allow word, proceed game
+        wordsUsed.add(word);
+        player.notifyClient(COMPLETE_TURN);
+
+        //Notify other players
+        for (PlayerClient client : players) {
+            if (!client.equals(currentPlayer))
+                client.notifyClient(player.getPlayerName()+ ": " + word);
+        }
+        completeTurn();
     }
 
     private void completeTurn(){
