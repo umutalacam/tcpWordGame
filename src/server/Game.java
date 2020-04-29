@@ -4,9 +4,8 @@ import javax.management.ObjectName;
 import java.util.ArrayList;
 
 public class Game {
-    private ArrayList<PlayerClient> players;
+    private final ArrayList<PlayerClient> players;
     private PlayerClient currentPlayer;
-    private int currentPlayerIndex = 0;
     private static Game currentGame;
     private ArrayList<String> wordsUsed = new ArrayList<>();
 
@@ -21,9 +20,11 @@ public class Game {
         this.currentPlayer = players.get(0);
     }
 
-    public static Game startNewGame(ArrayList<PlayerClient> players){
-        System.out.println("Started new game!");
+    public static Game startNewGame(ArrayList<PlayerClient> players){ ;
         currentGame = new Game(players);
+        for (PlayerClient client : players) {
+            client.notifyClient("Started new game!");
+        }
         currentGame.currentPlayer.notifyClient(ON_TURN);
         return currentGame;
     }
@@ -36,7 +37,7 @@ public class Game {
                     client.notifyClient(player.getPlayerName()+ ": " + word);
             }
             completeTurn();
-            currentPlayer.notifyClient(ON_TURN);
+
         }
         else {
             player.notifyClient(NOT_ON_TURN);
@@ -47,6 +48,7 @@ public class Game {
         int currentIndex = players.indexOf(currentPlayer) + 1;
         if (currentIndex >= players.size()) currentIndex = 0;
         currentPlayer = players.get(currentIndex);
+        currentPlayer.notifyClient(ON_TURN);
     }
 
     public static Game getCurrentGame() {

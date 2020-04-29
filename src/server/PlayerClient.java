@@ -13,18 +13,16 @@ class PlayerClient implements Runnable {
     private final String playerName;
     private final DataInputStream inputStream;
     private final DataOutputStream outputStream;
-    private final Socket clientSocket;
     boolean isloggedin;
 
     // constructor
     public PlayerClient(Socket clientSocket, String playerName) throws IOException {
-        this.clientSocket = clientSocket;
         this.inputStream = new DataInputStream(clientSocket.getInputStream());
         this.outputStream = new DataOutputStream(clientSocket.getOutputStream());
         this.playerName = playerName;
         this.isloggedin=true;
 
-        outputStream.writeUTF("You joined lobby.");
+        outputStream.writeUTF("You joined the lobby.");
     }
 
     @Override

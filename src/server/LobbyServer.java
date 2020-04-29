@@ -33,7 +33,7 @@ public class LobbyServer implements Runnable{
             Socket clientSocket = serverSocket.accept();
             String playerName = "Player"+numberOfPlayers;
             if (numberOfPlayers>0){
-                System.out.printf("\r%s joined game. (%s)\n->", playerName, clientSocket.getInetAddress().getHostAddress());
+                System.out.printf("\r%s joined lobby. (%s)\n->", playerName, clientSocket.getInetAddress().getHostAddress());
             }
 
             // Create a new handler object for handling this request.

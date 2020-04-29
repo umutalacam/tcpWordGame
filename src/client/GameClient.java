@@ -67,6 +67,7 @@ public class GameClient {
     public static String prompt(){
         Scanner keyboardScn = new Scanner(System.in);
         System.out.print("-> ");
-        return keyboardScn.nextLine();
+        String userInput = keyboardScn.nextLine();
+        return userInput;
     }
 }
