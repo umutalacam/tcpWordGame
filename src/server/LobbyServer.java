@@ -8,7 +8,6 @@ public class LobbyServer implements Runnable{
     // Array of players
     protected static ArrayList<PlayerClient> players = new ArrayList<>();
     private static int numberOfPlayers = 0;
-
     @Override
     public void run() {
         //Start server at port 1234
@@ -24,7 +23,7 @@ public class LobbyServer implements Runnable{
             //Accept incoming players
             accept(serverSocket);
         } catch (IOException e) {
-            System.err.println("An error occured while player is joining: " + e.getMessage());
+            System.err.println("An error occurred while player is joining: " + e.getMessage());
         }
     }
 
@@ -33,7 +32,9 @@ public class LobbyServer implements Runnable{
             // Accept the incoming request
             Socket clientSocket = serverSocket.accept();
             String playerName = "Player"+numberOfPlayers;
-            System.out.printf("%s joined game. (%s)", playerName, clientSocket.getInetAddress().getHostAddress());
+            if (numberOfPlayers>0){
+                System.out.printf("\r%s joined game. (%s)\n->", playerName, clientSocket.getInetAddress().getHostAddress());
+            }
 
             // Create a new handler object for handling this request.
             PlayerClient playerClient = new PlayerClient(clientSocket, playerName);

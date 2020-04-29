@@ -34,14 +34,13 @@ public class GameClient {
 
     protected void onTurn(){
         //Turn of this player.
-        System.out.println("Your turn.");
+        System.out.print("Your turn");
         String answer = prompt();
         sendWord(answer);
 
     }
 
     protected void completeTurn(){
-        System.out.println("OK!");
     }
 
     protected void notOnTurn(){
@@ -67,7 +66,7 @@ public class GameClient {
 
     public static String prompt(){
         Scanner keyboardScn = new Scanner(System.in);
-        System.out.print("->");
+        System.out.print("-> ");
         return keyboardScn.nextLine();
     }
 }

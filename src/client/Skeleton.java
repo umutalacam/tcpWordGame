@@ -46,6 +46,8 @@ public class Skeleton implements Runnable{
             case "game_over":
                 client.gameOver();
                 break;
+            default:
+                System.out.println(request);
         }
     }
 }

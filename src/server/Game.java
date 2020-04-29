@@ -29,11 +29,13 @@ public class Game {
     }
 
     public void giveWord(PlayerClient player, String word){
-        //Try to give word
         if (player.equals(currentPlayer)) {
             player.notifyClient(COMPLETE_TURN);
+            for (PlayerClient client : players) {
+                if (!client.equals(currentPlayer))
+                    client.notifyClient(player.getPlayerName()+ ": " + word);
+            }
             completeTurn();
-            currentPlayer.notifyClient(player.getPlayerName()+ ": " + word);
             currentPlayer.notifyClient(ON_TURN);
         }
         else {
@@ -45,10 +47,6 @@ public class Game {
         int currentIndex = players.indexOf(currentPlayer) + 1;
         if (currentIndex >= players.size()) currentIndex = 0;
         currentPlayer = players.get(currentIndex);
-        //Notify players
-        for (PlayerClient client : players ) {
-            client.notifyClient(currentPlayer.getPlayerName() + "'s Turn");
-        }
     }
 
     public static Game getCurrentGame() {
