@@ -1,17 +1,12 @@
 package server;
-// Java implementation of  server.Server side
-// It contains two classes : server.Server and server.ClientHandler
-// Save file as server.Server.java
-
 import java.io.*;
 import java.util.*;
 import java.net.*;
 
-// server.Server class
 public class LobbyServer implements Runnable{
 
     // Array of players
-    private static ArrayList<PlayerClient> players = new ArrayList<>();
+    protected static ArrayList<PlayerClient> players = new ArrayList<>();
     private static int numberOfPlayers = 0;
 
     @Override
@@ -37,10 +32,11 @@ public class LobbyServer implements Runnable{
         while (true) {
             // Accept the incoming request
             Socket clientSocket = serverSocket.accept();
-            System.out.println("New player: " + clientSocket.getInetAddress().getHostName());
+            String playerName = "Player"+numberOfPlayers;
+            System.out.printf("%s joined game. (%s)", playerName, clientSocket.getInetAddress().getHostAddress());
 
             // Create a new handler object for handling this request.
-            PlayerClient playerClient = new PlayerClient(clientSocket,"Player " + numberOfPlayers);
+            PlayerClient playerClient = new PlayerClient(clientSocket, playerName);
             players.add(playerClient);
 
             // Create a new Thread with this object.
@@ -51,7 +47,7 @@ public class LobbyServer implements Runnable{
         }
     }
 
-    public void startGame(){
+    public void startGame() {
         Game.startNewGame(players);
     }
 }

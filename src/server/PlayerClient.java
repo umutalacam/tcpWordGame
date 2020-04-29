@@ -10,10 +10,10 @@ import java.util.StringTokenizer;
  * Manages player communication
  */
 class PlayerClient implements Runnable {
-    private String playerName;
+    private final String playerName;
     private final DataInputStream inputStream;
     private final DataOutputStream outputStream;
-    private Socket clientSocket;
+    private final Socket clientSocket;
     boolean isloggedin;
 
     // constructor
@@ -24,7 +24,7 @@ class PlayerClient implements Runnable {
         this.playerName = playerName;
         this.isloggedin=true;
 
-        outputStream.writeUTF(playerName + " joined lobby.");
+        outputStream.writeUTF("You joined lobby.");
     }
 
     @Override
@@ -34,12 +34,11 @@ class PlayerClient implements Runnable {
             try {
                 // Receive string from user.
                 receivedInput = inputStream.readUTF();
-                outputStream.writeUTF("Player sent:" + receivedInput);;
-
-                if(receivedInput.equals("logout")){
-                    this.isloggedin=false;
-                    this.clientSocket.close();
-                    break;
+                if (Game.getCurrentGame() != null) {
+                    Game.getCurrentGame().giveWord(this, receivedInput);
+                }
+                else {
+                    System.out.println("Game not started.");
                 }
 
             } catch (IOException ignored) {
@@ -47,13 +46,20 @@ class PlayerClient implements Runnable {
             }
 
         }
-        try {
-            // closing resources
-            this.inputStream.close();
-            this.outputStream.close();
+    }
 
-        }catch(IOException e){
-            e.printStackTrace();
+    /**
+     * Notify client, invoke methods remotely
+     */
+    protected void notifyClient(String msg){
+        try {
+            outputStream.writeUTF(msg);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 }

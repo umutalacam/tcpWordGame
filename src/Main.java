@@ -32,7 +32,6 @@ public class Main {
             }
         }
 
-
         if (menuChoice == 1){
             //Create lobby
             createLobby();
@@ -44,11 +43,7 @@ public class Main {
         }
 
         //Start game client
-        try {
-            gameClient.main(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gameClient.init();
 
     }
 
@@ -62,15 +57,20 @@ public class Main {
             gameClient = new GameClient(ip);
             ipStr = ip.getHostAddress();
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-
         } catch (IOException e) {
             e.printStackTrace();
 
         }
         System.out.println("Created game lobby at "+ ipStr);
-        System.out.println("Waiting players.. Press enter to start game.");
+        System.out.println("Waiting players.. Write 'start' to start game.");
+        while (true) {
+            String userInput = prompt();
+            if (userInput.equals("start")) {
+                lobbyServer.startGame();
+                break;
+            }
+        }
+
     }
 
     private static void joinLobby(){
@@ -88,4 +88,12 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+
+    public static String prompt(){
+        Scanner keyboardScn = new Scanner(System.in);
+        System.out.print("->");
+        return keyboardScn.nextLine();
+    }
+
 }

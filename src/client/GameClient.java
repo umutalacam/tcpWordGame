@@ -2,7 +2,6 @@ package client;
 // Java implementation for multithreaded chat client
 // Save file as client.Client.java
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -16,7 +15,8 @@ public class GameClient {
     static Socket gameSocket;
     private static DataInputStream inputStream;
     private static DataOutputStream outputStream;
-
+    private static GameClient client;
+    private Thread skeletonThread;
 
     public GameClient(InetAddress serverAddress) throws IOException {
         // establish the connection with the game socket
@@ -25,47 +25,49 @@ public class GameClient {
         outputStream = new DataOutputStream(gameSocket.getOutputStream());
     }
 
+    public void init(){
+        //Start skeleton thread
+        Skeleton listener = new Skeleton(this, inputStream);
+        skeletonThread = new Thread(listener);
+        skeletonThread.start();
+    }
 
-    public static void main(String args[]) {
-        Scanner scn = new Scanner(System.in);
+    protected void onTurn(){
+        //Turn of this player.
+        System.out.println("Your turn.");
+        String answer = prompt();
+        sendWord(answer);
 
-        // sendMessage thread
-        Thread sendMessage = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    // read the message to deliver.
-                    System.out.print("-> ");
-                    String msg = scn.nextLine();
+    }
 
-                    try {
-                        // write on the output stream
-                        outputStream.writeUTF(msg);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+    protected void completeTurn(){
+        System.out.println("OK!");
+    }
 
-        // readMessage thread
-        Thread readMessage = new Thread(new Runnable() {
-            @Override
-            public void run() {
+    protected void notOnTurn(){
+        System.out.println("It's not your turn.");
+    }
 
-                while (true) {
-                    try {
-                        // read the message sent to this client
-                        String msg = inputStream.readUTF();
-                        System.out.println(msg);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+    protected void gameOver(){
+        try {
+            skeletonThread.wait();
+            System.out.println("Game Over: You lost.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-        sendMessage.start();
-        readMessage.start();
+    private void sendWord(String word){
+        try{
+            outputStream.writeUTF(word);
+        }catch (IOException exception){
+            System.out.println("Error: Cannot send word. Network error.");
+        }
+    }
+
+    public static String prompt(){
+        Scanner keyboardScn = new Scanner(System.in);
+        System.out.print("->");
+        return keyboardScn.nextLine();
     }
 }
