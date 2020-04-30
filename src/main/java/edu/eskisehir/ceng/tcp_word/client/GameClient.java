@@ -72,7 +72,7 @@ public class GameClient {
 
     protected void invalidWord(){
         System.out.println("\rPlease enter a valid word. " +
-                "Your answer's first character needs to be same with the last character of the last answer.");
+                "Your answer's first 2 characters needs to be same with the last 2 characters of the last answer.");
         onTurn();
     }
 

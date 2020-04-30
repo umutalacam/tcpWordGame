@@ -60,7 +60,7 @@ public class Game {
         if (!wordsUsed.isEmpty()){
             int lastIndex = wordsUsed.size() - 1;
             String lastWord = wordsUsed.get(lastIndex);
-            String lastChar = lastWord.substring(lastWord.length() - 1);
+            String lastChar = lastWord.substring(lastWord.length() - 2);
             if (!word.startsWith(lastChar)){
                 player.notifyClient(INVALID_WORD);
                 return;
