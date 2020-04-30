@@ -1,4 +1,6 @@
 import client.GameClient;
+import client.Skeleton;
+import server.Game;
 import server.LobbyServer;
 
 import java.io.IOException;
@@ -42,9 +44,10 @@ public class Main {
             System.out.println("Invalid choice. Please select 1 or 2.");
         }
 
-        //Start game client
-        gameClient.init();
-
+        //Start game client skeleton
+        Skeleton listener = new Skeleton(gameClient, gameClient.getInputStream());
+        Thread skeletonThread = new Thread(listener);
+        skeletonThread.start();
     }
 
     private static void createLobby(){
@@ -74,9 +77,9 @@ public class Main {
     }
 
     private static void joinLobby(){
-        Scanner keyboardScn = new Scanner(System.in);
-        System.out.print("Please enter the IP address of the game lobby.\n-> ");
-        String userInput = keyboardScn.nextLine();
+
+        System.out.print("Please enter the IP address of the game lobby.\n");
+        String userInput = prompt();
         try{
             InetAddress address = InetAddress.getByName(userInput);
             gameClient = new GameClient(address);

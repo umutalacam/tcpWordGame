@@ -5,6 +5,7 @@ package client;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import java.util.Timer;
 
 /**
  * Communicate with the game server
@@ -13,10 +14,8 @@ import java.util.Scanner;
 public class GameClient {
     final static int ServerPort = 1234;
     static Socket gameSocket;
-    private static DataInputStream inputStream;
-    private static DataOutputStream outputStream;
-    private static GameClient client;
-    private Thread skeletonThread;
+    private DataInputStream inputStream;
+    private DataOutputStream outputStream;
 
     public GameClient(InetAddress serverAddress) throws IOException {
         // establish the connection with the game socket
@@ -25,21 +24,22 @@ public class GameClient {
         outputStream = new DataOutputStream(gameSocket.getOutputStream());
     }
 
-    public void init(){
-        //Start skeleton thread
-        Skeleton listener = new Skeleton(this, inputStream);
-        skeletonThread = new Thread(listener);
-        skeletonThread.start();
+    public DataInputStream getInputStream() {
+        return inputStream;
+    }
+
+    public DataOutputStream getOutputStream() {
+        return outputStream;
     }
 
     /* Implementation of different states */
+    protected  void onTurn(){
+        //Set up timer
 
-    protected void onTurn(){
         //Turn of this player.
         System.out.print("Your turn");
         String answer = prompt();
         sendWord(answer);
-
     }
 
     protected void completeTurn(){ }
@@ -49,12 +49,7 @@ public class GameClient {
     }
 
     protected void gameOver(){
-        try {
-            skeletonThread.wait();
-            System.out.println("Time Up: You lost.");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Time Up: You lost.");
     }
 
     protected void alreadyGuessed(){
@@ -68,7 +63,7 @@ public class GameClient {
         onTurn();
     }
 
-    private void sendWord(String word){
+    private  void sendWord(String word){
         try{
             outputStream.writeUTF(word);
         }catch (IOException exception){
@@ -76,7 +71,7 @@ public class GameClient {
         }
     }
 
-    public static String prompt(){
+    private static String prompt() {
         Scanner keyboardScn = new Scanner(System.in);
         System.out.print("-> ");
         String userInput = keyboardScn.nextLine();

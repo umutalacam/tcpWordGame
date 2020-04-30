@@ -2,12 +2,15 @@ package server;
 
 import javax.management.ObjectName;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
     private final ArrayList<PlayerClient> players;
     private PlayerClient currentPlayer;
     private static Game currentGame;
-    private ArrayList<String> wordsUsed = new ArrayList<>();
+    private ArrayList<String> wordsUsed;
+    private Timer countDownTimer;
 
     private static final String ON_TURN = "on_turn";
     private static final String NOT_ON_TURN = "not_on_turn";
@@ -20,6 +23,8 @@ public class Game {
     private Game(ArrayList<PlayerClient> players) {
         this.players = players;
         this.currentPlayer = players.get(0);
+        this.countDownTimer = new Timer();
+        this.wordsUsed = new ArrayList<>();
     }
 
     public static Game startNewGame(ArrayList<PlayerClient> players){ ;
@@ -57,6 +62,7 @@ public class Game {
         }
 
         //Allow word, proceed game
+        stopCountdown();
         wordsUsed.add(word);
         player.notifyClient(COMPLETE_TURN);
 
@@ -73,6 +79,24 @@ public class Game {
         if (currentIndex >= players.size()) currentIndex = 0;
         currentPlayer = players.get(currentIndex);
         currentPlayer.notifyClient(ON_TURN);
+        startCountdown();
+    }
+
+    private void startCountdown(){
+        countDownTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                currentPlayer.notifyClient(GAME_OVER);
+            }
+        }, 5000);
+    }
+
+    private void stopCountdown(){
+        try {
+            countDownTimer.purge();
+        } catch (IllegalStateException ignore){
+            System.out.println("err");
+        }
     }
 
     public static Game getCurrentGame() {

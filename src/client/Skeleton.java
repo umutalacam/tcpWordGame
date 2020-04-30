@@ -18,6 +18,7 @@ public class Skeleton implements Runnable{
 
     @Override
     public void run() {
+        System.out.println();
         while (true) {
             try {
                 // Read message sent to this client
@@ -32,22 +33,22 @@ public class Skeleton implements Runnable{
     private void clientInvoker(String request){
         switch (request){
             case "on_turn":
-                client.onTurn();
+                this.client.onTurn();
                 break;
             case "not_on_turn":
-                client.notOnTurn();
+                this.client.notOnTurn();
                 break;
             case "complete_turn":
-                client.completeTurn();
+                this.client.completeTurn();
                 break;
             case "already_guessed":
-                client.alreadyGuessed();
+                this.client.alreadyGuessed();
                 break;
             case "invalid_word":
-                client.invalidWord();
+                this.client.invalidWord();
                 break;
             case "game_over":
-                client.gameOver();
+                this.client.gameOver();
                 break;
             default:
                 System.out.println(request);
