@@ -52,6 +52,9 @@ public class Skeleton implements Runnable{
             case "game_over":
                 App.gameClient.gameOver();
                 break;
+            case "win":
+                App.gameClient.win();
+                break;
             default:
                 System.out.print("\r"+request+"\n->");
         }

@@ -17,6 +17,7 @@ public class Game {
     private static final String ALREADY_GUESSED = "already_guessed";
     private static final String INVALID_WORD = "invalid_word";
     private static final String GAME_OVER = "game_over";
+    private static final String WIN = "win";
 
     //Game contructor
     private Game(ArrayList<PlayerClient> players) {
@@ -29,7 +30,13 @@ public class Game {
     public static Game startNewGame(ArrayList<PlayerClient> players){ ;
         currentGame = new Game(players);
         for (PlayerClient client : players) {
-            client.notifyClient("Started new game!");
+            //Send banner
+            client.notifyClient("Started new game!\n" +
+                    "---------------------\n" +
+                    " * You have 10 seconds to guess each words. When time out, you lose the game.\n" +
+                    " * Each word' s first character need to be same with the previous word's last character.\n" +
+                    " * Wait for 'Your Turn' command.\n" +
+                    "---------------------\n");
         }
         currentGame.currentPlayer.notifyClient(ON_TURN);
         return currentGame;
@@ -81,12 +88,33 @@ public class Game {
         startCountdown();
     }
 
+    private void gameOver(PlayerClient client){
+        int clientIndex = players.indexOf(client);
+        if (clientIndex != -1){
+            players.remove(clientIndex);
+            //Notify other players
+            for (PlayerClient player : players) {
+                player.notifyClient(client.getPlayerName() + " defeated! (Time out)");
+            }
+            if (players.size() == 1) {
+                players.get(0).notifyClient(WIN);
+            }
+            else if (clientIndex >= players.size()) {
+                clientIndex = 0;
+                currentPlayer = players.get(clientIndex);
+                currentPlayer.notifyClient(ON_TURN);
+            }
+        }
+    }
+
     private void startCountdown(){
         try {
+            countDownTimer = new Timer();
             countDownTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     currentPlayer.notifyClient(GAME_OVER);
+                    gameOver(currentPlayer);
                 }
             }, 10000);
         } catch (IllegalStateException ignore){

@@ -25,10 +25,13 @@ public class GameClient {
         inGame = true;
         while (inGame){
             String input = prompt();
-            System.out.print("-> ");
-            sendWord(input);
+            if (inGame) {
+                System.out.print("-> ");
+                sendWord(input);
+            }
         }
-        System.out.println("Game over. Bye!");
+        System.out.println("Goodbye!");
+        System.exit(0);
     }
 
 
@@ -46,15 +49,17 @@ public class GameClient {
         System.out.print("\rYour turn->");
     }
 
-    protected void completeTurn(){ }
+    protected void completeTurn(){
+        System.out.print("\r");
+    }
 
     protected void notOnTurn() {
-        System.out.println("\rIt's not your turn.");
+        System.out.print("\r");
     }
 
     protected void gameOver(){
-        System.out.println("\rTime Up! You lost the game.");
-        //this.inGame = false;
+        System.out.println("\rTime Up! You lost the game.\nPress enter the quit game.");
+        this.inGame = false;
     }
 
     protected void alreadyGuessed(){
@@ -68,6 +73,13 @@ public class GameClient {
         onTurn();
     }
 
+    protected void win(){
+        System.out.println("\r--------------------\n" +
+                "!!!Congratulations!!!\n" +
+                "You won. Press enter the quit game");
+        this.inGame = false;
+    }
+
     private  void sendWord(String word){
         try{
             outputStream.writeUTF(word);
@@ -78,7 +90,6 @@ public class GameClient {
 
     private static String prompt() {
         Scanner keyboardScn = new Scanner(System.in);
-        String userInput = keyboardScn.nextLine();
-        return userInput;
+        return keyboardScn.nextLine();
     }
 }
