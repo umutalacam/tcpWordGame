@@ -10,15 +10,18 @@ import java.util.Scanner;
 public class GameClient {
     final static int ServerPort = 1234;
     static Socket gameSocket;
+    private String playerName;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
     private boolean inGame;
 
-    public GameClient(InetAddress serverAddress) throws IOException {
+    public GameClient(InetAddress serverAddress, String playerName) throws IOException {
         // establish the connection with the game socket
+        this.playerName = playerName;
         GameClient.gameSocket = new Socket(serverAddress, ServerPort);
         inputStream = new DataInputStream(gameSocket.getInputStream());
         outputStream = new DataOutputStream(gameSocket.getOutputStream());
+        outputStream.writeUTF("nickname;"+playerName);
     }
 
     public void start(){

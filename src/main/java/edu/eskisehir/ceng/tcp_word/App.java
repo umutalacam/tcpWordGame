@@ -5,13 +5,17 @@ import edu.eskisehir.ceng.tcp_word.client.Skeleton;
 import edu.eskisehir.ceng.tcp_word.server.LobbyServer;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Scanner;
 
 public class App {
 
     public static GameClient gameClient;
+    public static LobbyServer lobbyServer;
 
     public static void main(String[] args) {
         Scanner keyboardInput = new Scanner(System.in);
@@ -43,6 +47,7 @@ public class App {
             joinLobby();
         }else{
             System.out.println("Invalid choice. Please select 1 or 2.");
+            System.exit(0);
         }
 
         //Start game client skeleton
@@ -54,37 +59,59 @@ public class App {
     }
 
     private static void createLobby(){
-        LobbyServer lobbyServer = new LobbyServer();
+        System.out.print("Please enter your nickname.\n");
+        String nicknameInput = prompt();
+
+        //Start server thread
+        lobbyServer = new LobbyServer();
         Thread lobbyThread = new Thread(lobbyServer);
         lobbyThread.start();
         String ipStr = "Unknown";
+
         try {
-            InetAddress ip = InetAddress.getByName("localhost");
-            gameClient = new GameClient(ip);
-            ipStr = ip.getHostAddress();
+            InetAddress localHost = InetAddress.getLocalHost();
+            Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
+            NetworkInterface primaryInterface = n.nextElement();
+            Enumeration<InetAddress> inetAddresses = primaryInterface.getInetAddresses();
+            while (inetAddresses.hasMoreElements()) {
+                InetAddress address = inetAddresses.nextElement();
+                if (address instanceof Inet4Address) {
+                    ipStr = address.getHostAddress();
+                }
+            }
+            //Join own server
+            gameClient = new GameClient(localHost, nicknameInput);
 
         } catch (IOException e) {
-            e.printStackTrace();
-
+            System.out.println("Cannot start lobby server properly");
+            System.exit(0);
         }
+
+        //Lobby pane
         System.out.println("Created game lobby at "+ ipStr);
         System.out.println("Waiting players.. Write 'start' to start game.");
+
         while (true) {
             String userInput = prompt();
             if (userInput.equals("start")) {
                 lobbyServer.startGame();
                 break;
             }
+            else {
+                lobbyServer.broadcast(lobbyServer.getAdminClient(), userInput);
+            }
         }
 
     }
 
     private static void joinLobby(){
-        System.out.print("Please enter the IP address of the game lobby.\n");
-        String userInput = prompt();
+        System.out.print("Please enter the network address of the game lobby.\n");
+        String ipInput = prompt();
+        System.out.print("Please enter a nickname.\n");
+        String nicknameInput = prompt();
         try{
-            InetAddress address = InetAddress.getByName(userInput);
-            gameClient = new GameClient(address);
+            InetAddress address = InetAddress.getByName(ipInput);
+            gameClient = new GameClient(address, nicknameInput);
         } catch (UnknownHostException e) {
             System.out.println("Error: Unknown host.");
             joinLobby();

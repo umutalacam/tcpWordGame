@@ -2,6 +2,7 @@ package edu.eskisehir.ceng.tcp_word.client;
 
 import edu.eskisehir.ceng.tcp_word.App;
 
+import javax.sound.midi.Soundbank;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class Skeleton implements Runnable{
                 String msg = serverInputStream.readUTF();
                 clientInvoker(msg);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Connection lost!");
                 break;
             }
         }

@@ -1,5 +1,7 @@
 package edu.eskisehir.ceng.tcp_word.server;
 
+import edu.eskisehir.ceng.tcp_word.App;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,14 +15,13 @@ class PlayerClient implements Runnable {
     private final DataInputStream inputStream;
     private final DataOutputStream outputStream;
     boolean isloggedin;
+    private static int playerCount;
 
     // constructor
     public PlayerClient(Socket clientSocket, String playerName) throws IOException {
         this.inputStream = new DataInputStream(clientSocket.getInputStream());
         this.outputStream = new DataOutputStream(clientSocket.getOutputStream());
         this.playerName = playerName;
-        this.isloggedin=true;
-
         outputStream.writeUTF("You joined the lobby.");
     }
 
@@ -35,13 +36,12 @@ class PlayerClient implements Runnable {
                     Game.getCurrentGame().giveWord(this, receivedInput);
                 }
                 else {
-                    System.out.println("Game not started.");
+                    String message = this.getPlayerName() + ": " + receivedInput;
+                    App.lobbyServer.broadcast(this, message);
                 }
-
             } catch (IOException ignored) {
 
             }
-
         }
     }
 
