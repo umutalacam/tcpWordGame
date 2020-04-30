@@ -1,10 +1,12 @@
-package client;
+package edu.eskisehir.ceng.tcp_word.client;
+
+import edu.eskisehir.ceng.tcp_word.App;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
 /**
- * Listens server. Interface between the server and client.
+ * Listens server. Interface between the server and edu.eskisehir.ceng.tcp_word.client.
  */
 public class Skeleton implements Runnable{
 
@@ -18,7 +20,6 @@ public class Skeleton implements Runnable{
 
     @Override
     public void run() {
-        System.out.println();
         while (true) {
             try {
                 // Read message sent to this client
@@ -26,6 +27,7 @@ public class Skeleton implements Runnable{
                 clientInvoker(msg);
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
@@ -33,25 +35,25 @@ public class Skeleton implements Runnable{
     private void clientInvoker(String request){
         switch (request){
             case "on_turn":
-                this.client.onTurn();
+                App.gameClient.onTurn();
                 break;
             case "not_on_turn":
-                this.client.notOnTurn();
+                App.gameClient.notOnTurn();
                 break;
             case "complete_turn":
-                this.client.completeTurn();
+                App.gameClient.completeTurn();
                 break;
             case "already_guessed":
-                this.client.alreadyGuessed();
+                App.gameClient.alreadyGuessed();
                 break;
             case "invalid_word":
-                this.client.invalidWord();
+                App.gameClient.invalidWord();
                 break;
             case "game_over":
-                this.client.gameOver();
+                App.gameClient.gameOver();
                 break;
             default:
-                System.out.println(request);
+                System.out.print("\r"+request+"\n->");
         }
     }
 }

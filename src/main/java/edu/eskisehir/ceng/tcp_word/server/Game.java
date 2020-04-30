@@ -1,6 +1,5 @@
-package server;
+package edu.eskisehir.ceng.tcp_word.server;
 
-import javax.management.ObjectName;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -83,16 +82,21 @@ public class Game {
     }
 
     private void startCountdown(){
-        countDownTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                currentPlayer.notifyClient(GAME_OVER);
-            }
-        }, 5000);
+        try {
+            countDownTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    currentPlayer.notifyClient(GAME_OVER);
+                }
+            }, 10000);
+        } catch (IllegalStateException ignore){
+
+        }
     }
 
     private void stopCountdown(){
         try {
+            countDownTimer.cancel();
             countDownTimer.purge();
         } catch (IllegalStateException ignore){
             System.out.println("err");

@@ -1,10 +1,9 @@
-package server;
+package edu.eskisehir.ceng.tcp_word.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.StringTokenizer;
 
 /**
  * Manages player communication
@@ -47,7 +46,7 @@ class PlayerClient implements Runnable {
     }
 
     /**
-     * Notify client, invoke methods remotely
+     * Notify edu.eskisehir.ceng.tcp_word.client, invoke methods remotely
      */
     protected void notifyClient(String msg){
         try {

@@ -1,11 +1,7 @@
-package client;
-// Java implementation for multithreaded chat client
-// Save file as client.Client.java
-
+package edu.eskisehir.ceng.tcp_word.client;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-import java.util.Timer;
 
 /**
  * Communicate with the game server
@@ -16,6 +12,7 @@ public class GameClient {
     static Socket gameSocket;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
+    private boolean inGame;
 
     public GameClient(InetAddress serverAddress) throws IOException {
         // establish the connection with the game socket
@@ -23,6 +20,17 @@ public class GameClient {
         inputStream = new DataInputStream(gameSocket.getInputStream());
         outputStream = new DataOutputStream(gameSocket.getOutputStream());
     }
+
+    public void start(){
+        inGame = true;
+        while (inGame){
+            String input = prompt();
+            System.out.print("-> ");
+            sendWord(input);
+        }
+        System.out.println("Game over. Bye!");
+    }
+
 
     public DataInputStream getInputStream() {
         return inputStream;
@@ -34,31 +42,28 @@ public class GameClient {
 
     /* Implementation of different states */
     protected  void onTurn(){
-        //Set up timer
-
         //Turn of this player.
-        System.out.print("Your turn");
-        String answer = prompt();
-        sendWord(answer);
+        System.out.print("\rYour turn->");
     }
 
     protected void completeTurn(){ }
 
     protected void notOnTurn() {
-        System.out.println("It's not your turn.");
+        System.out.println("\rIt's not your turn.");
     }
 
     protected void gameOver(){
-        System.out.println("Time Up: You lost.");
+        System.out.println("\rTime Up! You lost the game.");
+        //this.inGame = false;
     }
 
     protected void alreadyGuessed(){
-        System.out.println("Your answer have guessed before. Please enter another word.");
+        System.out.println("\rYour answer have guessed before. Please enter another word.");
         onTurn();
     }
 
     protected void invalidWord(){
-        System.out.println("Please enter a valid word. " +
+        System.out.println("\rPlease enter a valid word. " +
                 "Your answer's first character needs to be same with the last character of the last answer.");
         onTurn();
     }
@@ -73,7 +78,6 @@ public class GameClient {
 
     private static String prompt() {
         Scanner keyboardScn = new Scanner(System.in);
-        System.out.print("-> ");
         String userInput = keyboardScn.nextLine();
         return userInput;
     }

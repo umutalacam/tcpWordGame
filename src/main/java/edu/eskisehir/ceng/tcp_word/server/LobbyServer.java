@@ -1,4 +1,4 @@
-package server;
+package edu.eskisehir.ceng.tcp_word.server;
 import java.io.*;
 import java.util.*;
 import java.net.*;
@@ -8,6 +8,7 @@ public class LobbyServer implements Runnable{
     // Array of players
     protected static ArrayList<PlayerClient> players = new ArrayList<>();
     private static int numberOfPlayers = 0;
+
     @Override
     public void run() {
         //Start server at port 1234

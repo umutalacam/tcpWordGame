@@ -1,16 +1,17 @@
-import client.GameClient;
-import client.Skeleton;
-import server.Game;
-import server.LobbyServer;
+package edu.eskisehir.ceng.tcp_word;
+
+import edu.eskisehir.ceng.tcp_word.client.GameClient;
+import edu.eskisehir.ceng.tcp_word.client.Skeleton;
+import edu.eskisehir.ceng.tcp_word.server.LobbyServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Main {
+public class App {
 
-    private static GameClient gameClient;
+    public static GameClient gameClient;
 
     public static void main(String[] args) {
         Scanner keyboardInput = new Scanner(System.in);
@@ -48,6 +49,8 @@ public class Main {
         Skeleton listener = new Skeleton(gameClient, gameClient.getInputStream());
         Thread skeletonThread = new Thread(listener);
         skeletonThread.start();
+
+        gameClient.start();
     }
 
     private static void createLobby(){
@@ -77,7 +80,6 @@ public class Main {
     }
 
     private static void joinLobby(){
-
         System.out.print("Please enter the IP address of the game lobby.\n");
         String userInput = prompt();
         try{
