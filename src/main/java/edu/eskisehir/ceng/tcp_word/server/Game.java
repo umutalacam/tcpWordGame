@@ -19,10 +19,10 @@ public class Game {
     private static final String GAME_OVER = "game_over";
     private static final String WIN = "win";
 
-    //Game contructor
+    //Game constructor
     private Game(ArrayList<PlayerClient> players) {
         this.players = players;
-        this.currentPlayer = players.get(0);
+        this.currentPlayer = players.get(players.size()-1);
         this.countDownTimer = new Timer();
         this.wordsUsed = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class Game {
                     " * You have 10 seconds to guess each words. When time out, you lose the game.\n" +
                     " * Each word' s first character need to be same with the previous word's last character.\n" +
                     " * Wait for 'Your Turn' command.\n" +
-                    "---------------------\n");
+                    "---------------------");
         }
         currentGame.currentPlayer.notifyClient(ON_TURN);
         return currentGame;

@@ -6,7 +6,7 @@
 
     <groupId>ceng.eskisehir.edu</groupId>
     <artifactId>TCPWord</artifactId>
-    <version>1.0-Snap</version>
+    <version>0.9</version>
 
     <build>
         <plugins>

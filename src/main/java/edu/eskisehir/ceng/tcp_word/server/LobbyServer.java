@@ -77,7 +77,8 @@ public class LobbyServer implements Runnable{
         for (PlayerClient client: LobbyServer.players) {
             client.notifyClient(message);
         }
-        App.lobbyServer.notify(message, false);
+        if (!player.equals(this.admin))
+            App.lobbyServer.notify(message, true);
     }
 
     public void startGame() {

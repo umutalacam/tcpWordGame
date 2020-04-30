@@ -14,7 +14,6 @@ class PlayerClient implements Runnable {
     private final String playerName;
     private final DataInputStream inputStream;
     private final DataOutputStream outputStream;
-    boolean isloggedin;
     private static int playerCount;
 
     // constructor
@@ -37,7 +36,7 @@ class PlayerClient implements Runnable {
                 }
                 else {
                     String message = this.getPlayerName() + ": " + receivedInput;
-                    App.lobbyServer.broadcast(this, message);
+                    App.lobbyServer.broadcast(this, receivedInput);
                 }
             } catch (IOException ignored) {
 
